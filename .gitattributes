@@ -1,0 +1,5 @@
+*.rbf	filter=lfs diff=lfs merge=lfs -text
+*.tar.gz	filter=lfs diff=lfs merge=lfs -text
+u-boot.img	filter=lfs diff=lfs merge=lfs -text
+uImage	filter=lfs diff=lfs merge=lfs -text
+vmlinux	filter=lfs diff=lfs merge=lfs -text

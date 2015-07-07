@@ -1,0 +1,93 @@
+2015-05-08  Detlev Zundel  <detlev.zundel@ebv.com>
+
+	* environment.txt: Add 'addmem' scriptlet
+
+	* Makefile: Add rule to generate u-boot-env.img
+
+	* Add 'mkenvimage' x86 binary to create environment image from
+	source file.  If this doesn't work then please compile your own
+	version from the U-Boot sources
+
+2015-04-01  Detlev Zundel  <detlev.zundel@ebv.com>
+
+	* mk-sd-card.sh: Add fdisk '-c' flag for compatibility with old
+	fdisk versions (e.g. Ubuntu 10.04)
+
+2015-03-31  Detlev Zundel  <detlev.zundel@ebv.com>
+
+	* mk-sd-card.sh: Fix bug in superuser check
+
+2014-03-24  Detlev Zundel  <dzu@akk.org>
+
+	* Makefile: Generate adjust-env file from envrionment.txt.  This
+	file specifies variables in a simple '<var>=<val>' format. It can
+	be directly used in U-Boot by 'env import -t <ram addr>
+	${filesize}'.
+
+	* mk-sd-card.sh: Change filename of environment image to
+	'u-boot-env.img'
+
+	* mk-sd-card.sh: Change filename of FPGA image to 'fpga_image.rbf'
+
+	* mk-sd-card.sh: Remove /etc/udev/rules.d/70-persistent-net.rules
+	in root filesystem to erase persistent association of mac address
+	to interface name.  Without this, changing the mac address in
+	U-Boot will make udev rename the interface to eth1 (or later) in
+	the boot process - unless NFS is used.
+
+	* u-boot-env.img: The command 'fpga_load' is now error tolerant
+	when no image is found
+
+
+2014-02-11  Detlev Zundel  <dzu@denx.de>
+
+	* mk-sd-card.sh: Create boot directory only when not present and
+	fix wrong output of ext3 partition.
+
+2014-02-10  Detlev Zundel  <dzu@denx.de>
+
+	* uImage: Update to v3.12-rc7-299-g046d52e which fixes QSPI.
+
+2014-02-07  Detlev Zundel  <dzu@denx.de>
+
+	* mk-sd-card.sh: Only use sudo if needed.  This allows us to also
+	run the script directly on the target.
+
+	* rootfs-socrates.tar.gz: Add e2fsprogs so that we can execute
+	mk-sd-card.sh over nfs easily.
+
+	* adjust-env: Adapt environment for two partition layout and add
+	'bootdir' variable.  This is only used when loading from the ext3
+	partition.  Tftp will continue to use no prefix directory.
+
+	* mk-sd-card.sh: The original three partition layout was intended
+	to be easy on Windows users.  The second (FAT) partition was meant
+	to be easily read and writable from a Windows machine to swap in
+	new kernels and device trees.  As it turns out, Windows only
+	recognizes a FAT partition if it is the first partition on the
+	medium - otherwise it will blindly offer to (re-)format the drive.
+
+	As a result, the FAT partition was removed and we now load the
+	kernel+dtb from the Linux filesystem.
+
+	* ChangeLog: Add file to record history
+
+
+2014-02-06  Detlev Zundel  <dzu@denx.de>
+
+	* rootfs-socrates.tar.gz: Add missing hello-world.c
+
+	* mk-sd-card.sh: Renamed socrates-rootfs-.tar.gz to
+	rootfs-socrates.tar.gz
+
+2014-01-26  Detlev Zundel  <dzu@denx.de>
+
+	* preloader-mkimage.bin: Update to Quartus 13.1 release.
+
+	* u-boot.img: Update to Quartus 13.1 release.
+
+	* socfpga_lab1.rbf: Include as a sample FPGA image
+
+	* dzu-env.img: Add fpga_load scripts
+
+	* uImage: Linux kernel is now version 3.12 from git.rocketboards.org

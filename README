@@ -1,0 +1,50 @@
+EBV Software centric training material (2015-05-08)
+
+(Please check ChangeLog for recent changes)
+
+This directory contains all files neccessary to generate the SD card
+used in the EBV software centric trainings.  On a GNU/Linux system,
+attach a SD card that can be overwritten and call the mk-sd-card.sh
+script to do the work:
+
+[dzu@pet socrates-training]$ ./mk-sd-card.sh 
+usage: ./mk-sd-card.sh [device]
+       device - block device file of sd-card
+                (e.g. /dev/sdb or /dev/mmcblk0)
+[dzu@pet socrates-training]$ ./mk-sd-card.sh /dev/sdb
+
+Note that for this to work reliably, no partitions of the sd card must
+be mounted at that time.  Be especially aware of this if you use desktop
+environments like GNOME that automount all media that gets attached.
+
+The script will re-create a new partition table with two partitions
+and poulate them:
+
+1 - Preloader image
+2 - socrates-training root filesystem complete with small examples
+
+U-Boot is setup to boot the kernel+dtb from the Linux partition (below
+/boot), so insert the sd card and apply power.  The board will come up
+with a default IP address of 192.168.42.5.
+
+When you have a working tftp/NFS setup on 192.168.42.20, then you can
+boot into kernel+dtb from tftp and into the rootfs by running
+
+  run net_nfs
+
+Tuning of ip addresses, file names and rootpath is easily done by
+adjusting U-Boot environment variables, i.e. to load
+"uImage-development" instead of "uImage", one can do
+
+  setenv bootfile uImage-development
+  run net_nfs
+  
+If there is the need to reset the environment quickly, then one can
+use the prepared "adjust-env.scr" U-Boot script:
+
+  ext2load mmc 0:2 0x100000 boot/adjust-env.scr
+  source 0x100000
+  saveenv
+  
+Happy hacking!
+  Detlev

@@ -1,0 +1,32 @@
+addcons=setenv bootargs ${bootargs} console=${console},${baudrate}
+addip=setenv bootargs ${bootargs} ip=${ipaddr}:${serverip}:${gatewayip}:${netmask}:${hostname}:${netdev}:off
+addmisc=setenv bootargs ${bootargs} uio_pdrv_genirq.of_id=generic-uio
+addmem=setenv bootargs ${bootargs} mem=${mem}
+baudrate=115200
+bootcmd=run mmc_mmc
+bootdelay=10
+bootdir=boot
+bootfile=uImage
+console=ttyS0
+ethaddr=00:4E:8B:C3:E5:9B
+fdt_addr_r=0xf00000
+fdt_file=socfpga_socrates.dtb
+fpga_image=fpga_image.rbf
+fpga_load=mmc rescan; ext2load mmc 0:${mmcpart} 0x100000 ${bootdir}/${fpga_image} && fpga load 0 0x100000 ${filesize} && run bridge_enable_handoff
+ipaddr=192.168.42.5
+kernel_addr_r=0x10000000
+mem=1024M
+mmc_mmc=mmc rescan; ext2load mmc 0:${mmcpart} ${kernel_addr_r} ${bootdir}/${bootfile}; ext2load mmc 0:${mmcpart} ${fdt_addr_r} ${bootdir}/${fdt_file}; run mmcargs addcons addmisc addmem; bootm ${kernel_addr_r} - ${fdt_addr_r}
+mmcargs=setenv bootargs root=${mmcroot} rw rootwait
+mmcpart=2
+mmcroot=/dev/mmcblk0p2
+net_mmc=tftp ${kernel_addr_r} ${bootfile}; tftp ${fdt_addr_r} ${fdt_file}; run mmcargs addcons addmisc addmem; bootm ${kernel_addr_r} - ${fdt_addr_r}
+net_nfs=tftp ${kernel_addr_r} ${bootfile}; tftp ${fdt_addr_r} ${fdt_file}; run nfsargs addip addcons addmisc addmem; bootm ${kernel_addr_r} - ${fdt_addr_r}
+netmask=255.255.255.0
+nfsargs=setenv bootargs root=/dev/nfs rw nfsroot=${serverip}:${rootpath}
+rootpath=/opt/socfpga/nfs/rootfs-socrates/
+serverip=192.168.42.20
+stderr=serial
+stdin=serial
+stdout=serial
+verify=n
