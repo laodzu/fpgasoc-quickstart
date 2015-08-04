@@ -2,7 +2,7 @@
 
 dist:	adjust-env.scr adjust-env u-boot-env.img
 	rm -f *~
-	( cd .. ; tar zcvf /tmp/socrates-training.tgz socrates-training )
+	( D=$(shell basename $$(pwd)) ; cd .. ; tar -zcv --exclude-vcs -f /tmp/$${D}.tgz $${D} )
 
 adjust-env.scr:	adjust-env
 	mkimage -T script -C none -n 'Reset Environment' -d $< $@
