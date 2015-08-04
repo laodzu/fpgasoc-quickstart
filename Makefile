@@ -1,6 +1,6 @@
-.PHONY: dist
+.PHONY: dist ChangeLog
 
-dist:	adjust-env.scr adjust-env u-boot-env.img
+dist:	adjust-env.scr adjust-env u-boot-env.img ChangeLog
 	rm -f *~
 	( D=$(shell basename $$(pwd)) ; cd .. ; tar -zcv --exclude-vcs -f /tmp/$${D}.tgz $${D} )
 
@@ -17,3 +17,6 @@ u-boot-env.img:	environment.txt
 	else \
 		./mkenvimage -p 0 -s 4096 -o $@ $< ; \
 	fi
+
+ChangeLog:
+	git log > $@
