@@ -13,6 +13,7 @@ fdt_addr_r=0xf00000
 fdt_file=socfpga_socrates.dtb
 fpga_image=fpga_image.rbf
 fpga_load=mmc rescan; ext2load mmc 0:${mmcpart} 0x100000 ${bootdir}/${fpga_image} && fpga load 0 0x100000 ${filesize} && run bridge_enable_handoff
+fpga_load_net=tftp 0x100000 ${fpga_image} && fpga load 0 0x100000 ${filesize} && run bridge_enable_handoff
 ipaddr=192.168.42.5
 kernel_addr_r=0x10000000
 mem=1024M
