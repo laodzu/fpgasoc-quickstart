@@ -6,7 +6,7 @@
 # 
 # (C) 2013-2015 by Detlev Zundel, <detlev.zundel@ebv.com> EBV Elektronik GmbH & Co KG
 
-MNT=/mnt/sd-card
+MNT=/tmp/sd-card-$$
 
 usage() {
     echo "usage: $0 [device]" >&2
@@ -66,7 +66,7 @@ if [ "$ANS" != "y" ] ; then
 fi
 
 if [ ! -d $MNT ]; then
-    echo "Mountpoint does not exist - creating it" 
+    echo "Mountpoint \"$MNT\" does not exist - creating it"
     ${SUDO} mkdir $MNT
 fi
 
