@@ -1,6 +1,8 @@
 .PHONY: dist ChangeLog
 
-dist:	adjust-env.scr adjust-env u-boot-env.img ChangeLog
+all:	adjust-env.scr adjust-env u-boot-env.img ChangeLog
+
+dist:
 	rm -f *~
 	( D=$(shell basename $$(pwd)) ; cd .. ; tar -zcv --exclude-vcs -f /tmp/$${D}.tgz $${D} )
 
