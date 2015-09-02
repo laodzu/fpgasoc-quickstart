@@ -120,7 +120,8 @@ echo "Copying kernel to ${PART2}"
 cd boot
 ${SUDO} cp $OPWD/uImage .
 ${SUDO} cp $OPWD/socfpga_socrates.dtb .
-${SUDO} cp $OPWD/fpga_image.rbf .
+${SUDO} cp $OPWD/fpga_image1.rbf .
+${SUDO} cp $OPWD/fpga_image2.rbf .
 ${SUDO} cp $OPWD/adjust-env.scr .
 # Remove udev association of mac address to interface name
 ${SUDO} rm -f etc/udev/rules.d/70-persistent-net.rules
