@@ -107,7 +107,7 @@ echo "Writing U-Boot"
 ${SUDO} dd if=u-boot.img of=${PART1} bs=64k seek=4
 
 echo "Creating filesystems on ${PART2}"
-${SUDO} mkfs.ext3 ${PART2}
+${SUDO} mkfs.ext3 -F ${PART2}
 
 echo "Unpacking rootfs-socrates to ${PART2}"
 ${SUDO} mount ${PART2} $MNT
