@@ -2,7 +2,7 @@
 
 all:	adjust-env.scr adjust-env u-boot-env.img ChangeLog
 
-dist:
+dist:	ChangeLog
 	rm -f *~
 	( D=$(shell basename $$(pwd)) ; cd .. ; tar -zcv --exclude-vcs -f /tmp/$${D}.tgz $${D} )
 
