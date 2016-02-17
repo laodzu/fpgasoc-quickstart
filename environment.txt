@@ -31,6 +31,10 @@ net_mmc=tftp ${kernel_addr_r} ${bootfile}; tftp ${fdt_addr_r} ${fdt_file}; run m
 net_nfs=tftp ${kernel_addr_r} ${bootfile}; tftp ${fdt_addr_r} ${fdt_file}; run nfsargs addip addcons addmisc addmem fdt_fixup; bootm ${kernel_addr_r} - ${fdt_addr_r}
 netmask=255.255.255.0
 nfsargs=setenv bootargs root=/dev/nfs rw nfsroot=${serverip}:${rootpath}
+ocl_enable_fdt=fdt addr ${fdt_addr_r}; fdt set /soc/aclsoc_drv status "okay"; echo "Enabled aclsoc_drv in device tree"
+ocl_enable_fixup=setenv fdt_fixup run ocl_enable_fdt
+ocl_mmc_mmc=run fpga_load bridge_enable_handoff ocl_enable_fixup mmc_mmc
+ocl_net_nfs=run fpga_load_net bridge_enable_handoff ocl_enable_fixup net_nfs
 rootpath=/opt/socfpga/nfs/rootfs-socrates/
 serverip=192.168.42.20
 stderr=serial
