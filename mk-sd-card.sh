@@ -20,6 +20,15 @@ part_size() {
     echo $3
 }
 
+ensure_unmounted() {
+    if mount | grep $1 ; then
+	if ! umount $1 ; then
+	    echo "Failed to unmount $1 - exiting" 1>&2
+	    exit 2
+	fi
+    fi
+}
+
 if [ $# -lt 1 ]; then
     usage
     exit 1
@@ -55,6 +64,9 @@ else
     echo "Unknown device naming scheme"
     exit 1
 fi
+
+ensure_unmounted $PART1
+ensure_unmounted $PART2
 
 echo "Warning, we are going to overwrite ${DEV}!"
 echo -n "Are you really sure (y/n)? "
