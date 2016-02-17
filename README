@@ -1,11 +1,11 @@
-EBV Software centric training material (2015-05-08)
+EBV SoCrates Quickstart Software (2016-02-17)
 
 (Please check ChangeLog for recent changes)
 
 This directory contains all files neccessary to generate the SD card
-used in the EBV software centric trainings.  On a GNU/Linux system,
-attach a SD card that can be overwritten and call the mk-sd-card.sh
-script to do the work:
+used in the EBV SoCrates evaluation kits.  On a GNU/Linux system,
+attach an SD card and call the mk-sd-card.sh script to create the
+whole image:
 
 [dzu@pet socrates-training]$ ./mk-sd-card.sh 
 usage: ./mk-sd-card.sh [device]
@@ -13,18 +13,18 @@ usage: ./mk-sd-card.sh [device]
                 (e.g. /dev/sdb or /dev/mmcblk0)
 [dzu@pet socrates-training]$ ./mk-sd-card.sh /dev/sdb
 
-Note that for this to work reliably, no partitions of the sd card must
+Note that for this to work reliably, no partitions of the SD card must
 be mounted at that time.  Be especially aware of this if you use desktop
 environments like GNOME that automount all media that gets attached.
 
 The script will re-create a new partition table with two partitions
-and poulate them:
+and populate them:
 
 1 - Preloader image
 2 - socrates-training root filesystem complete with small examples
 
 U-Boot is setup to boot the kernel+dtb from the Linux partition (below
-/boot), so insert the sd card and apply power.  The board will come up
+/boot), so insert the SD card and apply power.  The board will come up
 with a default IP address of 192.168.42.5.
 
 When you have a working tftp/NFS setup on 192.168.42.20, then you can
@@ -45,6 +45,3 @@ use the prepared "adjust-env.scr" U-Boot script:
   ext2load mmc 0:2 0x100000 boot/adjust-env.scr
   source 0x100000
   saveenv
-  
-Happy hacking!
-  Detlev
