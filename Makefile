@@ -1,4 +1,6 @@
-.PHONY: dist ChangeLog
+.PHONY: dist ChangeLog rootfs-socrates.tar.gz
+
+NFSPATH := /opt/socfpga/nfs/rootfs-socrates
 
 all:	adjust-env.scr adjust-env u-boot-env.img ChangeLog
 
@@ -22,3 +24,6 @@ u-boot-env.img:	environment.txt
 
 ChangeLog:
 	git log > $@
+
+rootfs-socrates.tar.gz:
+	TMP=`mktemp` ; sudo tar -C $(NFSPATH) -czf $$TMP . ; mv $$TMP $@
