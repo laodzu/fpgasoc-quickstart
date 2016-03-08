@@ -26,4 +26,7 @@ ChangeLog:
 	git log > $@
 
 rootfs-socrates.tar.gz:
-	TMP=`mktemp` ; sudo tar -C $(NFSPATH) -czf $$TMP . ; mv $$TMP $@
+	TMP=`mktemp` ; \
+	sudo tar -C $(NFSPATH) --exclude=.ssh/authorized_keys \
+	  --exclude=.ssh/known_hosts -czf $$TMP . ; \
+	mv $$TMP $@
