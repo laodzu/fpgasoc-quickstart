@@ -6,7 +6,7 @@ all:	adjust-env.scr adjust-env u-boot-env.img ChangeLog
 
 dist:	ChangeLog
 	rm -f *~
-	( D=$(shell basename $$(pwd)) ; cd .. ; tar -zcv --exclude-vcs -f /tmp/$${D}.tgz $${D} )
+	D=$(shell basename $$(pwd)) ; tar -C .. -zcv --exclude-vcs -f /tmp/$${D}.tgz $${D}
 
 adjust-env.scr:	adjust-env
 	mkimage -T script -C none -n 'Reset Environment' -d $< $@
