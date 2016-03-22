@@ -21,7 +21,7 @@ part_size() {
 }
 
 ensure_unmounted() {
-    if mount | grep $1 ; then
+    if mount | grep -q $1 ; then
 	if ! umount $1 ; then
 	    echo "Failed to unmount $1 - exiting" 1>&2
 	    exit 2
