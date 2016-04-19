@@ -5,6 +5,32 @@ EBV SoCrates Quickstart Software
 Last update: 2016-02-17
 (Please check ChangeLog for recent changes)
 
+SD card contents
+----------------
+
+The SD card contains the following pieces of software:
+
+ - Linux kernel 4.0 from https://github.com/laodzu/linux/tree/ebv-socrates-v4.0
+
+ - Ready to use FPGA bitstreams:
+
+   - fpga_image1.rbf: SoCrates workshop lab with SysID and PIO for
+     SoCrates v1.x
+   - fpga_image2.rbf: SoCrates workshop lab with SysID and PIO for
+     SoCrates v2.x
+   - fpga_ocl.rbf: Blank OpenCL image required for alcsoc_drv
+   - fpga_lnt.rbf: Display controller for LNT+IFI Demo setup
+
+ - Debian 8 root filesystem
+
+   The root filesystem is a standard (minimal) Debian 8 armv7a-hf
+   installation with the following additions:
+
+   - Gator daemon and kernel module for DS5 debugging
+   - Workshop examples
+   - OpenCL vector_add demo
+
+
 SD card creation
 ----------------
 
@@ -26,8 +52,9 @@ environments like GNOME that automount all media that gets attached.
 The script will re-create a new partition table with two partitions
 and populate them:
 
-1 - Preloader image
-2 - socrates-training root filesystem complete with small examples
+1 - Preloader image + U-Boot
+2 - Ext3 root filesystem containing kernel, dtb and FPGA images in /boot
+
 
 Default bootup
 --------------
@@ -35,6 +62,7 @@ Default bootup
 U-Boot is setup to boot the kernel+dtb from the Linux partition (below
 /boot), so insert the SD card and apply power.  The board will come up
 with a default IP address of 192.168.42.5.
+
 
 Boot via tftp and NFS
 ---------------------
@@ -45,11 +73,12 @@ boot into kernel+dtb from tftp and into the rootfs by running
   run net_nfs
 
 Tuning of ip addresses, file names and rootpath is easily done by
-adjusting U-Boot environment variables, i.e. to load
-"uImage-development" instead of "uImage", one can do
+adjusting U-Boot environment variables, i.e. to load "uImage-devel"
+once instead of "uImage", one can do
 
-  setenv bootfile uImage-development
+  setenv bootfile uImage-devel
   run net_nfs
+
 
 Resetting the environment
 -------------------------
@@ -61,7 +90,115 @@ use the prepared "adjust-env.scr" U-Boot script:
   source 0x100000
   saveenv
 
-Debian 8 root filesystem
+
+Script helpers in U-Boot
 ------------------------
 
-The root filesystem is a standard Debian 8 armv7a-hf installation.
+The U-Boot environment contains scripting to allow switching easily
+between standalone and networked development.  There are two main
+entry points for those boot scenarios:
+
+ - "mmc_mmc" load kernel+dtb from boot directory in the second
+   partition and sets up Linux command line to mount this partition as
+   root filesystem
+
+ - "net_nfs" loads kernel+dtb via tftp and setus up Linux command line
+   to use an NFS root filesystem
+
+
+Loading the FPGA from U-Boot
+----------------------------
+
+The "boot_linux" script checks the contents of the "fpga_image"
+variable.  If it is not equal to "none", it is interpreted as a
+filename and fetched from the corresponding source, i.e. from mmc or
+via tftp.
+
+
+Dynamic device tree fixups
+--------------------------
+
+The "boot_linux" script will iterate over the contents of the
+"_fdt_fixups" variable and change the "status" attribute to "ok".
+This will effectively enable fragments that are disabled per default.
+As an example of how to use that, see the OpenCL demo.
+
+
+OpenCL demo
+-----------
+
+Executing "ocl_setup" before running one of the toplevel boot commands
+will setup the environment to load the OpenCL fpga and enable the
+"aclsoc_drv" fragment in the device tree.  Inside Linux this will
+trigger loading of the OpenCL kernel module.  With these easy steps,
+one can run the provided "vector_add" demo:
+
+Stop U-Boot autoboot and enter the followinf command
+
+  run ocl_setup mmc_mmc
+
+This loads the FPGA and starts Linux with the aclsoc_drv enabled in
+the device tree.  Then login as root and do
+
+  cd /home/training/opencl
+  source init_opencl.sh
+  ./run_vector_add.sh
+
+
+Quick reference of toplevel scripting commands
+----------------------------------------------
+
+boot_linux=run fpga_load; run kernel_load setup_cmdline fdt_fixup; bootm ${kernel_addr_r} - ${fdt_addr_r}
+fpga_load=if test ${fpga_image} != "none"; then if test ${kernel_src} = "mmc"; then run fpga_load_mmc; else run fpga_load_net; fi; run bridge_enable_handoff; fi
+fpga_load_mmc=ext2load mmc 0:${mmcpart} 0x100000 ${bootdir}/${fpga_image}; fpga load 0 0x100000 ${filesize}
+fpga_load_net=tftp 0x100000 ${fpga_image}; fpga load 0 0x100000 ${filesize}
+kernel_load=if test ${kernel_src} = "mmc"; then run kernel_load_mmc; else run kernel_load_net; fi
+kernel_load_mmc=ext2load mmc 0:${mmcpart} ${kernel_addr_r} ${bootdir}/${bootfile}; ext2load mmc 0:${mmcpart} ${fdt_addr_r} ${bootdir}/${fdt_file}
+kernel_load_net=tftp ${kernel_addr_r} ${bootfile}; tftp ${fdt_addr_r} ${fdt_file}
+mmc_mmc=setenv kernel_src mmc; setenv rootfs_src mmc; run boot_linux
+net_mmc=setenv kernel_src net; setenv rootfs_src mmc; run boot_linux
+net_nfs=setenv kernel_src net; setenv rootfs_src net; run boot_linux
+ocl_setup=setenv fpga_image fpga_ocl.rbf; run ocl_enable_fixup
+setup_cmdline=if test ${rootfs_src} = "mmc"; then run mmcargs ; else run nfsargs ; fi; run addcons addip addmisc addmem
+
+
+Quick reference of internal scripting commands
+----------------------------------------------
+
+ocl_enable_fixup=setenv _fdt_fixups ${_fdt_fixups} /soc/aclsoc_drv
+addcons=setenv bootargs ${bootargs} console=${console},${baudrate}
+addip=setenv bootargs ${bootargs} ip=${ipaddr}:${serverip}:${gatewayip}:${netmask}:${hostname}:${netdev}:off
+addmisc=setenv bootargs ${bootargs} uio_pdrv_genirq.of_id=generic-uio
+addmem=setenv bootargs ${bootargs} mem=${mem}
+fb_enable_fixup=setenv _fdt_fixups ${_fdt_fixups} /soc/framebuffer
+fb_init=mw 0x3f000000 0 0x5dc00; mw 0xffc25080 0x3fff; mw 0xff200318 0x3f000000; mw 0xff20031c 0
+fb_setup=setenv fpga_image fpga_lnt.rbf; run fpga_load fb_init fb_enable_fixup
+fdt_enable=echo Enabling ${fdt_node} in devicetree; fdt addr ${fdt_addr_r}; fdt set ${fdt_node} status "okay"
+fdt_fixup=for fdt_node in ${_fdt_fixups}; do run fdt_enable ; done
+nfsargs=setenv bootargs root=/dev/nfs rw nfsroot=${serverip}:${rootpath}
+mmcargs=setenv bootargs root=${mmcroot} rw rootwait
+
+
+Quick reference of scripting variables and their defaults
+---------------------------------------------------------
+
+baudrate=115200
+bootcmd=run mmc_mmc
+bootdelay=10
+bootdir=boot
+bootfile=uImage
+console=ttyS0
+ethaddr=00:4E:8B:C3:E5:9B
+fdt_addr_r=0xf00000
+fdt_file=socfpga_socrates.dtb
+fpga_image=none
+ipaddr=192.168.42.5
+kernel_addr_r=0x10000000
+kernel_src=mmc
+mem=1024M
+mmcpart=2
+mmcroot=/dev/mmcblk0p2
+netmask=255.255.255.0
+rootfs_src=mmc
+rootpath=/opt/socfpga/nfs/rootfs-socrates/
+serverip=192.168.42.20
