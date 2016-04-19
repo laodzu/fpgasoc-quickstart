@@ -17,7 +17,7 @@ fdt_enable=echo Enabling ${fdt_node} in devicetree; fdt addr ${fdt_addr_r}; fdt 
 fdt_file=socfpga_socrates.dtb
 fdt_fixup=for fdt_node in ${_fdt_fixups}; do run fdt_enable ; done
 fpga_image=none
-fpga_load_mmc=ext2load mmc 0:${mmcpart} 0x100000 ${bootdir}/${fpga_image}
+fpga_load_mmc=ext2load mmc 0:${mmcpart} 0x100000 ${bootdir}/${fpga_image}; fpga load 0 0x100000 ${filesize}
 fpga_load_net=tftp 0x100000 ${fpga_image}; fpga load 0 0x100000 ${filesize}
 fpga_load=if test ${fpga_image} != "none"; then if test ${kernel_src} = "mmc"; then run fpga_load_mmc; else run fpga_load_net; fi; run bridge_enable_handoff; fi
 ipaddr=192.168.42.5
