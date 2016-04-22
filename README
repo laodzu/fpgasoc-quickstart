@@ -145,6 +145,22 @@ the device tree.  Then login as root and do
   ./run_vector_add.sh
 
 
+Using DS5 Streamline
+--------------------
+
+To use DS5 Streamline, one has to load the gator kernel module and
+start the gator daemon.  To do this, login as root and do
+
+  cd /home/training/gator
+  ./gatord &
+
+This will automatically load the kernel module and start the daemon in
+the background.  Start up DS5 on the host system and connect it via
+ethernet to SoCrates (default ip is 192.168.42.5).  To drill down also
+on the kernel, one needs to add the vmlinux file to the "Program
+Images" in DS5.
+
+
 Quick reference of toplevel scripting commands
 ----------------------------------------------
 
