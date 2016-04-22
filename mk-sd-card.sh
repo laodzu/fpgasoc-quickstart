@@ -131,6 +131,7 @@ echo "Copying kernel to ${PART2}"
 [ ! -d boot ] && ${SUDO} mkdir boot
 cd boot
 ${SUDO} cp $OPWD/uImage .
+${SUDO} cp $OPWD/vmlinux .
 ${SUDO} cp $OPWD/socfpga_socrates.dtb .
 ${SUDO} cp $OPWD/*.rbf .
 ${SUDO} cp $OPWD/adjust-env.scr .
