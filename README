@@ -38,11 +38,11 @@ used in the EBV SoCrates evaluation kits.  On a GNU/Linux system,
 attach an SD card and call the mk-sd-card.sh script to create the
 whole image:
 
-[dzu@pet socrates-training]$ ./mk-sd-card.sh 
+[dzu@pet socrates-quickstart]$ ./mk-sd-card.sh
 usage: ./mk-sd-card.sh [device]
        device - block device file of sd-card
-                (e.g. /dev/sdb or /dev/mmcblk0)
-[dzu@pet socrates-training]$ ./mk-sd-card.sh /dev/sdb
+		(e.g. /dev/sdb or /dev/mmcblk0)
+[dzu@pet socrates-quickstart]$ ./mk-sd-card.sh /dev/sdb
 
 Note that for this to work reliably, no partitions of the SD card must
 be mounted at that time.  Be especially aware of this if you use desktop
