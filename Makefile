@@ -1,6 +1,7 @@
 .PHONY: dist ChangeLog rootfs-socrates.tar.gz
 
 NFSPATH := /opt/socfpga/nfs/rootfs-socrates
+ROOTFSGITPATH := /opt/git/rootfs-socrates
 
 all:	adjust-env.scr adjust-env u-boot-env.img ChangeLog
 
@@ -30,3 +31,4 @@ rootfs-socrates.tar.gz:
 	sudo tar -C $(NFSPATH) --exclude=.ssh/authorized_keys \
 	  --exclude=.ssh/known_hosts -czf $$TMP . ; \
 	mv $$TMP $@
+	git --git-dir $(ROOTFSGITPATH) log > ChangeLog.rootfs
