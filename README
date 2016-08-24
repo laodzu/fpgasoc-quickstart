@@ -20,9 +20,9 @@ The SD card contains the following pieces of software:
    - fpga_ocl.rbf: Blank OpenCL image required for alcsoc_drv
    - fpga_lnt.rbf: Display controller for LNT+IFI Demo setup
 
- - Debian 8 root filesystem
+ - Debian 8 root file system
 
-   The root filesystem is a standard (minimal) Debian 8 armv7a-hf
+   The root file system is a standard (minimal) Debian 8 armv7a-hf
    installation with the following additions:
 
    - Gator daemon and kernel module for DS5 debugging
@@ -33,7 +33,7 @@ The SD card contains the following pieces of software:
 SD card creation
 ----------------
 
-This directory contains all files neccessary to generate the SD card
+This directory contains all files necessary to generate the SD card
 used in the EBV SoCrates evaluation kits.  On a GNU/Linux system,
 attach an SD card and call the mk-sd-card.sh script to create the
 whole image:
@@ -45,17 +45,18 @@ usage: ./mk-sd-card.sh [device]
 [dzu@pet socrates-quickstart]$ ./mk-sd-card.sh /dev/sdb
 
 Note that for this to work reliably, no partitions of the SD card must
-be mounted at that time.  Be especially aware of this if you use desktop
-environments like GNOME that automount all media that gets attached.
+be mounted at that time.  Be especially aware of this if you use
+desktop environments like GNOME that auto-mount all media that gets
+attached.
 
 The script will re-create a new partition table with two partitions
 and populate them:
 
 1 - Preloader image + U-Boot
-2 - Ext3 root filesystem containing kernel, dtb and FPGA images in /boot
+2 - Ext3 root file system containing kernel, dtb and FPGA images in /boot
 
 
-Default bootup
+Default boot-up
 --------------
 
 U-Boot is setup to boot the kernel+dtb from the Linux partition (below
@@ -67,11 +68,11 @@ Boot via tftp and NFS
 ---------------------
 
 When you have a working tftp/NFS setup on 192.168.42.20, then you can
-boot into kernel+dtb from tftp and into the rootfs by running
+boot into kernel+dtb from tftp and into the root file system by running
 
   run net_nfs
 
-Tuning of ip addresses, file names and rootpath is easily done by
+Tuning of IP addresses, file names and root path is easily done by
 adjusting U-Boot environment variables, i.e. to load "uImage-devel"
 once instead of "uImage", one can do
 
@@ -99,22 +100,22 @@ entry points for those boot scenarios:
 
  - "mmc_mmc" load kernel+dtb from boot directory in the second
    partition and sets up Linux command line to mount this partition as
-   root filesystem
+   root file system
 
- - "net_nfs" loads kernel+dtb via tftp and setus up Linux command line
-   to use an NFS root filesystem
+ - "net_nfs" loads kernel+dtb via tftp and setup up Linux command line
+   to use an NFS root file system
 
 
 Loading the FPGA from U-Boot
 ----------------------------
 
 The "boot_linux" script checks the contents of the "fpga_image"
-variable.  If it is not equal to "none", it is interpreted as a
-filename and fetched from the corresponding source, i.e. from mmc or
-via tftp.
+variable.  If it is not equal to "none", it is interpreted as a file
+name and fetched from the corresponding source, i.e. from mmc or via
+tftp.
 
 
-Dynamic device tree fixups
+Dynamic device tree fix-ups
 --------------------------
 
 The "boot_linux" script will iterate over the contents of the
@@ -126,18 +127,18 @@ As an example of how to use that, see the OpenCL demo.
 OpenCL demo
 -----------
 
-Executing "ocl_setup" before running one of the toplevel boot commands
-will setup the environment to load the OpenCL fpga and enable the
-"aclsoc_drv" fragment in the device tree.  Inside Linux this will
-trigger loading of the OpenCL kernel module.  With these easy steps,
-one can run the provided "vector_add" demo:
+Executing "ocl_setup" before running one of the top level boot
+commands will setup the environment to load the OpenCL bit stream and
+enable the "aclsoc_drv" fragment in the device tree.  Inside Linux
+this will trigger loading of the OpenCL kernel module.  With these
+easy steps, one can run the provided "vector_add" demo:
 
-Stop U-Boot autoboot and enter the following command
+Stop U-Boot auto boot and enter the following command
 
   run ocl_setup mmc_mmc
 
 This loads the FPGA and starts Linux with the aclsoc_drv enabled in
-the device tree.  Then login as root and do
+the device tree.  Then log in as root and do
 
   cd /home/training/opencl
   source init_opencl.sh
@@ -148,14 +149,14 @@ Using DS5 Streamline
 --------------------
 
 To use DS5 Streamline, one has to load the gator kernel module and
-start the gator daemon.  To do this, login as root and do
+start the gator daemon.  To do this, log in as root and do
 
   cd /home/training/gator
   ./gatord &
 
 This will automatically load the kernel module and start the daemon in
 the background.  Start up DS5 on the host system and connect it via
-ethernet to SoCrates (default ip is 192.168.42.5).  To drill down also
+Ethernet to SoCrates (default IP is 192.168.42.5).  To drill down also
 on the kernel, one needs to add the vmlinux file to the "Program
 Images" in DS5.
 
@@ -168,7 +169,7 @@ The kernel contained in this package was compiled from the
 https://github.com/laodzu/linux.git
 
 The kernel configuration and the device tree are contained in the
-respoitory, so no separate download is neccessary for this.
+repository, so no separate download is necessary for this.
 
 To regenerate do something like the following
 
@@ -176,8 +177,8 @@ To regenerate do something like the following
   cd linux
   git checkout -b ebv-socrates-v4.0 origin/ebv-socrates-v4.0
 
-Now setup your cross compiler - the example uses a Yocto 2.0 toolchain
-build previously, but basically any suitable toolchain will do:
+Now setup your cross compiler - the example uses a Yocto 2.0 tool chain
+build previously, but basically any suitable tool chain will do:
 
   . /opt/poky-lsb/2.0.1/environment-setup-cortexa9hf-vfp-neon-poky-linux-gnueabi
 
@@ -193,18 +194,18 @@ latter has to be renamed to "socfpga_socrates.dtb" to fit the U-Boot
 scripts described previously.
 
 If you want to compile the kernel modules also and install them
-e.g. into an NFS root filesystem "/opt/nfs/rootfs-socrates", you could
-do the following:
+e.g. into an NFS root file system "/opt/nfs/rootfs-socrates", you
+could do the following:
 
   make modules
   make INSTALLMODPATH=/opt/nfs/rootfs-socrates modules_install
 
-Depending on the access rights of the root filesystem, you may want to
-run the latter command with sudo or ensure that you can write to
+Depending on the access rights of the root file system, you may want
+to run the latter command with sudo or ensure that you can write to
 "lib/modules" in the hierarchy.
 
 
-Quick reference of toplevel scripting commands
+Quick reference of top level scripting commands
 ----------------------------------------------
 
 boot_linux=run fpga_load; run kernel_load setup_cmdline fdt_fixup; bootm ${kernel_addr_r} - ${fdt_addr_r}
