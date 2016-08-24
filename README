@@ -159,6 +159,50 @@ ethernet to SoCrates (default ip is 192.168.42.5).  To drill down also
 on the kernel, one needs to add the vmlinux file to the "Program
 Images" in DS5.
 
+Rebuilding the kernel
+---------------------
+
+The kernel contained in this package was compiled from the
+"ebv-socrates-v4.0" branch from this repository:
+
+https://github.com/laodzu/linux.git
+
+The kernel configuration and the device tree are contained in the
+respoitory, so no separate download is neccessary for this.
+
+To regenerate do something like the following
+
+  git clone https://github.com/laodzu/linux.git
+  cd linux
+  git checkout -b ebv-socrates-v4.0 origin/ebv-socrates-v4.0
+
+Now setup your cross compiler - the example uses a Yocto 2.0 toolchain
+build previously, but basically any suitable toolchain will do:
+
+  . /opt/poky-lsb/2.0.1/environment-setup-cortexa9hf-vfp-neon-poky-linux-gnueabi
+
+Compiling the kernel using the standard procedure:
+
+  make socrates_defconfig
+  make -j4 LOADADDR=0x8000 uImage
+  make socfpga_cyclone5_socrates.dtb
+
+Results of this compilation are the kernel "arch/arm/boot/uImage" and
+"arch/arm/boot/dts/socfpga_cyclone5_socrates.dtb". Note that the
+latter has to be renamed to "socfpga_socrates.dtb" to fit the U-Boot
+scripts described previously.
+
+If you want to compile the kernel modules also and install them
+e.g. into an NFS root filesystem "/opt/nfs/rootfs-socrates", you could
+do the following:
+
+  make modules
+  make INSTALLMODPATH=/opt/nfs/rootfs-socrates modules_install
+
+Depending on the access rights of the root filesystem, you may want to
+run the latter command with sudo or ensure that you can write to
+"lib/modules" in the hierarchy.
+
 
 Quick reference of toplevel scripting commands
 ----------------------------------------------
