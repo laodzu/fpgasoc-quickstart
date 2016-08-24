@@ -132,7 +132,7 @@ echo "Copying kernel to ${PART2}"
 cd boot
 ${SUDO} cp $OPWD/uImage .
 ${SUDO} cp $OPWD/vmlinux .
-${SUDO} cp $OPWD/socfpga_socrates.dtb .
+${SUDO} cp $OPWD/*.dtb .
 ${SUDO} cp $OPWD/*.rbf .
 ${SUDO} cp $OPWD/adjust-env.scr .
 # Remove udev association of mac address to interface name
