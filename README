@@ -132,7 +132,7 @@ will setup the environment to load the OpenCL fpga and enable the
 trigger loading of the OpenCL kernel module.  With these easy steps,
 one can run the provided "vector_add" demo:
 
-Stop U-Boot autoboot and enter the followinf command
+Stop U-Boot autoboot and enter the following command
 
   run ocl_setup mmc_mmc
 
