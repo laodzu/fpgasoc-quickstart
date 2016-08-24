@@ -30,7 +30,11 @@ u-boot-env.img:	environment.txt
 	fi
 
 ChangeLog:
-	git log > $@
+	if [ -d .git ]; then \
+		git log > $@ ; \
+	else \
+		echo "Not running from git - cannot regenerate $@" ; \
+	fi
 
 rootfs-socrates.tar.gz:
 	TMP=`mktemp` ; \
