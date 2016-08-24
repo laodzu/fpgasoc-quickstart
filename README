@@ -194,11 +194,11 @@ latter has to be renamed to "socfpga_socrates.dtb" to fit the U-Boot
 scripts described previously.
 
 If you want to compile the kernel modules also and install them
-e.g. into an NFS root file system "/opt/nfs/rootfs-socrates", you
-could do the following:
+e.g. into an NFS root file system "/opt/socfpga/nfs/rootfs-socrates",
+you could do the following:
 
   make modules
-  make INSTALLMODPATH=/opt/nfs/rootfs-socrates modules_install
+  make INSTALL_MOD_PATH=/opt/socfpga/nfs/rootfs-socrates modules_install
 
 Depending on the access rights of the root file system, you may want
 to run the latter command with sudo or ensure that you can write to
