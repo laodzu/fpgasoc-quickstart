@@ -106,6 +106,64 @@ entry points for those boot scenarios:
    to use an NFS root file system
 
 
+Default DIP Switch Settings
+---------------------------
+
+The bootmode is selected by the DIP switches P8 on SoCrates v1 and P18
+on SoCrates v2.  The switches are connected like the following:
+
+,-------+-------+-------+-------+-------+-------+-------+-------.
+| MSEL0 | MSEL1 | MSEL2 | MSEL3 | MSEL4 | BSEL0 | BSEL1 | BSEL2 |
+`---1---+---2---+---3---+---4---+---5---+---6---+---7---+---8---´
+
+Please note that the MSEL pins are connected to pull-ups and the
+switches connect them to ground, so the settings are inverse to the
+binary values in the documentation.  The BSEL pins are connected to a
+pull-down and the switches connect them to VCC so no inversion is
+neccessary for these pins.
+
+Both pins are connected to the DIP switch with the least significant
+bit rather than the most significant bit, so the order has to be
+reversed to yield a regular binary value.
+
+The MSEL settings select the FPGA configuration mode.  For a complete
+overview of the supported modes, refer to Cyclpne V documentation.
+Loading the FPGA from HPS is only supported in the FPP mode
+however. The default setting (FPPx16, compression enabled, no
+encryption) for loading the FPGA from the HPS is as follows:
+
+,-----+-----+-----+-----+-----+-----+-----+-----.
+| on  | off | off | on  | on  |  X  |  X  |  X  |
+`--1--+--2--+--3--+--4--+--5--+--6--+--7--+--8--´
+
+With the caveats mentioned above, this corresponds to MSEL[4..0] =
+0b00110.
+
+The possible values for the BSEL settings are as follows:
+
+,-----+-----+-----+-----+-----+-----+-----+-----.
+|  X  |  X  |  X  |  X  |  X  | on  | off | off | Boot from FPGA
++-----+-----+-----+-----+-----+-----+-----+-----+
+|  X  |  X  |  X  |  X  |  X  | on  | off | on  | Boot from SD/MMC
++-----+-----+-----+-----+-----+-----+-----+-----+
+|  X  |  X  |  X  |  X  |  X  | on  | on  | on  | Boot from QSPI
+`--1--+--2--+--3--+--4--+--5--+--6--+--7--+--8--´
+
+
+The default switch settings of the board should be
+like the following:
+
++-----+-----+-----+-----+-----+-----+-----+-----+
+| on  | off | off | on  | on  | on  | off | on  |
++--1--+--2--+--3--+--4--+--5--+--6--+--7--+--8--+
+
+Just flip switch 7 to the on position and the board will boot from
+QSPI:
+
++-----+-----+-----+-----+-----+-----+-----+-----+
+| on  | off | off | on  | on  | on  | on  | on  |
++--1--+--2--+--3--+--4--+--5--+--6--+--7--+--8--+
+
 Loading the FPGA from U-Boot
 ----------------------------
 
