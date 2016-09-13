@@ -13,12 +13,12 @@ The SD card contains the following pieces of software:
 
  - Ready to use FPGA bitstreams:
 
-   - fpga_image1.rbf: SoCrates workshop lab with SysID and PIO for
+   - socrates1_lab.rbf: SoCrates workshop lab with SysID and PIO for
      SoCrates v1.x
-   - fpga_image2.rbf: SoCrates workshop lab with SysID and PIO for
+   - socrates2_lab.rbf: SoCrates workshop lab with SysID and PIO for
      SoCrates v2.x
-   - fpga_ocl.rbf: Blank OpenCL image required for alcsoc_drv
-   - fpga_lnt.rbf: Display controller for LNT+IFI Demo setup
+   - socrates_ocl.rbf: Blank OpenCL image required for alcsoc_drv
+   - socrates_fb_touch.rbf: Display controller for LNT+IFI Demo setup
 
  - Debian 8 root file system
 
