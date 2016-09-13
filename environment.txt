@@ -11,7 +11,7 @@ console=ttyS0
 ethaddr=00:4E:8B:C3:E5:9B
 fb_enable_fixup=setenv _fdt_fixups ${_fdt_fixups} /soc/framebuffer
 fb_init=mw 0x3f000000 0 0x5dc00; mw 0xffc25080 0x3fff; mw 0xff200318 0x3f000000; mw 0xff20031c 0
-fb_setup=setenv fpga_image fpga_lnt.rbf; run fpga_load fb_init fb_enable_fixup
+fb_setup=setenv fpga_image fpga_lnt.rbf; setenv fpga_init run fb_init; run fb_enable_fixup
 fdt_addr_r=0xf00000
 fdt_enable=echo Enabling ${fdt_node} in devicetree; fdt addr ${fdt_addr_r}; fdt set ${fdt_node} status "okay"
 fdt_file=socfpga_socrates.dtb
@@ -19,7 +19,8 @@ fdt_fixup=for fdt_node in ${_fdt_fixups}; do run fdt_enable ; done
 fpga_image=none
 fpga_load_mmc=ext2load mmc 0:${mmcpart} 0x100000 ${bootdir}/${fpga_image}; fpga load 0 0x100000 ${filesize}
 fpga_load_net=tftp 0x100000 ${fpga_image}; fpga load 0 0x100000 ${filesize}
-fpga_load=if test ${fpga_image} != "none"; then if test ${kernel_src} = "mmc"; then run fpga_load_mmc; else run fpga_load_net; fi; run bridge_enable_handoff; fi
+fpga_load=if test ${fpga_image} != "none"; then if test ${kernel_src} = "mmc"; then run fpga_load_mmc; else run fpga_load_net; fi; run bridge_enable_handoff; run fpga_init; fi
+fpga_init=true
 ipaddr=192.168.42.5
 kernel_addr_r=0x10000000
 kernel_src=mmc
