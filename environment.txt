@@ -42,7 +42,7 @@ ocl_setup=setenv fpga_image socrates_ocl.rbf; run ocl_enable_fixup
 rootfs_src=mmc
 rootpath=/opt/socfpga/nfs/rootfs-socrates/
 serverip=192.168.42.20
-setup_cmdline=if test ${rootfs_src} = "mmc"; then run mmcargs ; else run nfsargs ; fi; run addcons addip addmisc addmem
+setup_cmdline=if test ${rootfs_src} = "mmc"; then run mmcargs ; else run nfsargs addip; fi; run addcons addmisc addmem
 boot_linux=run fpga_load; run kernel_load setup_cmdline fdt_fixup; bootm ${kernel_addr_r} - ${fdt_addr_r}
 stderr=serial
 stdin=serial
