@@ -2,6 +2,7 @@ addcons=setenv bootargs ${bootargs} console=${console},${baudrate}
 addip=setenv bootargs ${bootargs} ip=${ipaddr}:${serverip}:${gatewayip}:${netmask}:${hostname}:${netdev}:off
 addmisc=setenv bootargs ${bootargs} uio_pdrv_genirq.of_id=generic-uio
 addmem=setenv bootargs ${bootargs} mem=${mem}
+autoload=no
 baudrate=115200
 bootcmd=run mmc_mmc
 bootdelay=10
