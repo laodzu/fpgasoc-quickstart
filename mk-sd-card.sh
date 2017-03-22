@@ -87,27 +87,11 @@ echo "Creating partition table with two partitions"
 echo " $PART1 - Preloader / U-Boot"
 echo " $PART2 - ext3 root filesystem"
 
-    echo -e "o
-n
-p
-1
-2048
-+1M
-n
-p
-2
-
-
-t
-1
-a2
-t
-2
-83
-w
-q
-" | ${SUDO} fdisk -c -u ${DEV} > /dev/null 2>&1
-
+sudo sfdisk ${DEV} <<EOF
+,1M,a2
+,,L
+EOF
+sync
 
 echo "Writing environment variables"
 ${SUDO} dd if=u-boot-env.img of=${DEV} bs=1 seek=512
